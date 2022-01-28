@@ -2,27 +2,37 @@
 
 void initEnigma(struct Enigma* machine)
 {
+	strcpy(machine->Key, "GLF");
+	machine->RotorOrder[0] = '2';
+	machine->RotorOrder[1] = '1';
+	machine->RotorOrder[2] = '3';
+
 	if (loadData(machine))
 		return;
-	printf("%d\n", machine->reflector);
+	printf("%c\n", machine->RotorTransmission[0]);
+	printf("%s\n", machine->RotorPermutation[0]);
 }
 
 int loadData(struct Enigma* machine)
 {
-	FILE* file;
-	file = fopen("config.txt", "r");
-	if (file == NULL)
+	// Returns true if failed.
+	FILE* fp;
+	char PathRotor[] = "rotor_mech/rotor0.txt";
+	size_t rtnF;
+
+	PathRotor[sizeof(PathRotor) - 6] = machine->RotorOrder[0];
+	fp = fopen(PathRotor, "r");
+	if (fp == NULL)
 	{
-		perror("Blad - config.txt : "); // Drukuje komunikat o bledzie na stderr z errno
+		perror(PathRotor); // Drukuje komunikat o bledzie na stderr z errno
 		return 1;
 	}
 
-	/*fgets(machine->Key, ROTORCOUNT, file);
-	fgets(machine->RotorOrder, ROTORCOUNT, file);*/
-	fscanf(file, "%s", machine->Key);
-	fscanf(file, "%s", machine->RotorOrder);
-	machine->reflector = fgetc(file);
+	rtnF = fread(machine->RotorPermutation[0], sizeof(machine->RotorPermutation[0][0]), CHAR_NUM, fp);
+	rtnF = fread(&machine->RotorTransmission[0], sizeof(machine->RotorPermutation[1][0]), 1, fp);
 
-	fclose(file);
+	printf("%d\n", rtnF);
+	fclose(fp);
+	fp = NULL;
 	return 0;
 }

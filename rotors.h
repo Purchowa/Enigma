@@ -19,7 +19,7 @@ struct Enigma
 
 	char RotorPermutation[ROTORCOUNT][CHAR_NUM];
 	char RotorTransmission[ROTORCOUNT];
-	char Key[ROTORCOUNT];
+	char Key[ROTORCOUNT + 1];
 	char PlugBoard[(CHAR_NUM) / (PAIR)][PAIR];
 	char ReflectorPermutation[CHAR_NUM];
 	
