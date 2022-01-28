@@ -15,13 +15,13 @@ typedef unsigned char uint1;
 struct Enigma
 {
 	uint1 RotorOrder[ROTORCOUNT];
-	uint1 reflector;
+	uint1 ref;
 
-	char RotorPermutation[ROTORCOUNT][CHAR_NUM];
-	char RotorTransmission[ROTORCOUNT];
+	char RotorPerm[ROTORCOUNT][CHAR_NUM];
+	char RotorTrans[ROTORCOUNT];
 	char Key[ROTORCOUNT + 1];
 	char PlugBoard[(CHAR_NUM) / (PAIR)][PAIR];
-	char ReflectorPermutation[CHAR_NUM];
+	char RefPerm[CHAR_NUM];
 	
 };
 

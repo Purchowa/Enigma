@@ -9,8 +9,7 @@ void initEnigma(struct Enigma* machine)
 
 	if (loadData(machine))
 		return;
-	printf("%c\n", machine->RotorTransmission[0]);
-	printf("%s\n", machine->RotorPermutation[0]);
+	
 }
 
 int loadData(struct Enigma* machine)
@@ -20,19 +19,32 @@ int loadData(struct Enigma* machine)
 	char PathRotor[] = "rotor_mech/rotor0.txt";
 	size_t rtnF;
 
-	PathRotor[sizeof(PathRotor) - 6] = machine->RotorOrder[0];
-	fp = fopen(PathRotor, "r");
-	if (fp == NULL)
+	for (int i = 0; i < ROTORCOUNT; i++)
 	{
-		perror(PathRotor); // Drukuje komunikat o bledzie na stderr z errno
-		return 1;
+		PathRotor[sizeof(PathRotor) - 6] = machine->RotorOrder[i];
+
+		fp = fopen(PathRotor, "r");
+		if (fp == NULL)
+		{
+			perror(PathRotor); // Drukuje komunikat o bledzie na stderr z errno
+			return 1;
+		}
+
+		rtnF = fread(machine->RotorPerm[i], sizeof(machine->RotorPerm[0][0]), CHAR_NUM, fp);
+		if (rtnF != CHAR_NUM)
+		{
+			printf("Error %s: expected %d but got %llu bytes after reading.\n", PathRotor, CHAR_NUM, rtnF);
+			return 1;
+		}
+		
+		rtnF = fread(&machine->RotorTrans[i], sizeof(machine->RotorTrans[0]), sizeof(machine->RotorTrans[0]), fp);
+		if (rtnF != sizeof(machine->RotorTrans[0]))
+		{
+			printf("Error %s: expected %llu but got %llu bytes after reading.\n", PathRotor, sizeof(machine->RotorTrans[0]), rtnF);
+			return 1;
+		}
+		fclose(fp);
+		fp = NULL;
 	}
-
-	rtnF = fread(machine->RotorPermutation[0], sizeof(machine->RotorPermutation[0][0]), CHAR_NUM, fp);
-	rtnF = fread(&machine->RotorTransmission[0], sizeof(machine->RotorPermutation[1][0]), 1, fp);
-
-	printf("%d\n", rtnF);
-	fclose(fp);
-	fp = NULL;
 	return 0;
 }
