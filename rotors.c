@@ -1,18 +1,30 @@
 #include "rotors.h"
 
-void initEnigma(struct Enigma* machine)
+void initEnigma(struct Enigma* eni)
 {
-	strcpy(machine->Key, "GLF");
-	machine->RotorOrder[0] = '2';
-	machine->RotorOrder[1] = '1';
-	machine->RotorOrder[2] = '3';
+	eni->Key[0] = 'G';
+	eni->Key[1] = 'L';
+	eni->Key[2] = 'F';
 
-	if (loadData(machine))
+	eni->RotorOrder[0] = '2';
+	eni->RotorOrder[1] = '1';
+	eni->RotorOrder[2] = '3';
+
+	if (loadData(eni))
+	{
+		printf("error\n");
 		return;
+	}
+		
 	
 }
 
-int loadData(struct Enigma* machine)
+int loadData(struct Enigma* eni)
+{
+	return loadRotorConfig(eni) | loadPlugBoardConfig(eni);
+}
+
+int loadRotorConfig(struct Enigma* eni)
 {
 	// Returns true if failed.
 	FILE* fp;
@@ -21,7 +33,7 @@ int loadData(struct Enigma* machine)
 
 	for (int i = 0; i < ROTORCOUNT; i++)
 	{
-		PathRotor[sizeof(PathRotor) - 6] = machine->RotorOrder[i];
+		PathRotor[sizeof(PathRotor) - 6] = eni->RotorOrder[i];
 
 		fp = fopen(PathRotor, "r");
 		if (fp == NULL)
@@ -30,21 +42,41 @@ int loadData(struct Enigma* machine)
 			return 1;
 		}
 
-		rtnF = fread(machine->RotorPerm[i], sizeof(machine->RotorPerm[0][0]), CHAR_NUM, fp);
+		rtnF = fread(eni->RotorPerm[i], sizeof(eni->RotorPerm[0][0]), CHAR_NUM, fp);
 		if (rtnF != CHAR_NUM)
 		{
 			printf("Error %s: expected %d but got %llu bytes after reading.\n", PathRotor, CHAR_NUM, rtnF);
 			return 1;
 		}
-		
-		rtnF = fread(&machine->RotorTrans[i], sizeof(machine->RotorTrans[0]), sizeof(machine->RotorTrans[0]), fp);
-		if (rtnF != sizeof(machine->RotorTrans[0]))
+
+		rtnF = fread(&eni->RotorTrans[i], sizeof(eni->RotorTrans[0]), sizeof(eni->RotorTrans[0]), fp);
+		if (rtnF != sizeof(eni->RotorTrans[0]))
 		{
-			printf("Error %s: expected %llu but got %llu bytes after reading.\n", PathRotor, sizeof(machine->RotorTrans[0]), rtnF);
+			printf("Error %s: expected %llu but got %llu bytes after reading.\n", PathRotor, sizeof(eni->RotorTrans[0]), rtnF);
 			return 1;
 		}
 		fclose(fp);
 		fp = NULL;
 	}
+	return 0;
+}
+
+int loadPlugBoardConfig(struct Enigma* eni)
+{
+	FILE* fp;
+	const char pathPlg[] = "plugboard/plugboard.txt";
+	size_t rtnF;
+	fp = fopen(pathPlg, "r");
+
+	if (fp == NULL)
+	{
+		perror(pathPlg);
+		return 1;
+	}
+
+	// TODO
+
+	fclose(fp);
+	fp = NULL;
 	return 0;
 }

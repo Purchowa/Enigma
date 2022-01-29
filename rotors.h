@@ -9,6 +9,7 @@
 #define CHAR_NUM 26
 #define ROTORCOUNT 3
 #define PAIR 2
+#define I(c) ((c)-'A')
 
 typedef unsigned char uint1;
 
@@ -19,14 +20,16 @@ struct Enigma
 
 	char RotorPerm[ROTORCOUNT][CHAR_NUM];
 	char RotorTrans[ROTORCOUNT];
-	char Key[ROTORCOUNT + 1];
+	char Key[ROTORCOUNT];
 	char PlugBoard[(CHAR_NUM) / (PAIR)][PAIR];
 	char RefPerm[CHAR_NUM];
 	
 };
 
-void initEnigma(struct Enigma* machine);
-int loadData(struct Enigma* machine);
+void initEnigma(struct Enigma* eni);
+int loadData(struct Enigma* eni);
+int loadRotorConfig(struct Enigma* eni);
+int loadPlugBoardConfig(struct Enigma* eni);
 
 #endif // ! _ROTORS_H
 
