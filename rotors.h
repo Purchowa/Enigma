@@ -16,7 +16,7 @@ typedef unsigned char uint1;
 struct Enigma
 {
 	uint1 RotorOrder[ROTORCOUNT];
-	uint1 ref;
+	uint1 reflectorNum;
 
 	char RotorPerm[ROTORCOUNT][CHAR_NUM];
 	char RotorTrans[ROTORCOUNT];
@@ -30,6 +30,7 @@ void initEnigma(struct Enigma* eni);
 int loadData(struct Enigma* eni);
 int loadRotorConfig(struct Enigma* eni);
 int loadPlugBoardConfig(struct Enigma* eni);
+int loadReflectorConfig(struct Enigma* eni);
 
 #endif // ! _ROTORS_H
 

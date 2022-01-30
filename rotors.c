@@ -10,18 +10,21 @@ void initEnigma(struct Enigma* eni)
 	eni->RotorOrder[1] = '1';
 	eni->RotorOrder[2] = '3';
 
+	eni->reflectorNum = '1';
+
 	if (loadData(eni))
 	{
 		printf("error\n");
 		return;
 	}
-		
 	
 }
 
 int loadData(struct Enigma* eni)
 {
-	return loadRotorConfig(eni) | loadPlugBoardConfig(eni);
+	// Feature - zabezpieczenie przed dublowaniem sie na PlugBoard wtyczek
+	// Feature - zabezpiecznie przed wczytaniem z pliku czegos innego niz ['A', 'Z']
+	return loadRotorConfig(eni) | loadPlugBoardConfig(eni) | loadReflectorConfig(eni);
 }
 
 int loadRotorConfig(struct Enigma* eni)
@@ -66,6 +69,7 @@ int loadPlugBoardConfig(struct Enigma* eni)
 	FILE* fp;
 	const char pathPlg[] = "plugboard/plugboard.txt";
 	size_t rtnF;
+	char nChar;
 	fp = fopen(pathPlg, "r");
 
 	if (fp == NULL)
@@ -74,9 +78,48 @@ int loadPlugBoardConfig(struct Enigma* eni)
 		return 1;
 	}
 
-	// TODO
+	int i = 0;
+	do
+	{
+		rtnF = fread(eni->PlugBoard[i++], sizeof(eni->PlugBoard[0][0]), PAIR, fp);
+		fread(&nChar, sizeof(char), 1, fp); // reading '\n' character
+
+	} while(rtnF == PAIR);
+
+	if (!feof(fp)) // Jesli po odczytaniu nie zostal osiagniety koniec pliku to cos jest nie tak
+	{
+		printf("Error reading : %s\n", pathPlg);
+		return 1;
+	}
 
 	fclose(fp);
 	fp = NULL;
+	return 0;
+}
+
+int loadReflectorConfig(struct Enigma* eni)
+{
+	FILE* fp;
+	size_t rtnF;
+	char PathRef[] = "rotor_mech/reflector0.txt";
+
+	PathRef[sizeof(PathRef) - 6] = eni->reflectorNum;
+
+	fp = fopen(PathRef, "r");
+	if (fp == NULL)
+	{
+		perror(PathRef);
+		return 1;
+	}
+
+	rtnF = fread(eni->RefPerm, sizeof(eni->RefPerm[0]), CHAR_NUM, fp);
+	if (rtnF != CHAR_NUM)
+	{
+		printf("Error %s: expected %d but got %llu bytes after reading.\n", PathRef, CHAR_NUM, rtnF);
+		return 1;
+	}
+	fclose(fp);
+	fp = NULL;
+
 	return 0;
 }
