@@ -1,15 +1,13 @@
-#ifndef  _ROTORS_H
-#define _ROTORS_H
+#ifndef  _ROTOR_CONFIG_H
+#define _ROTOR_CONFIG_H
 
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 
-
 #define CHAR_NUM 26
 #define ROTORCOUNT 3
 #define PAIR 2
-#define I(c) ((c)-'A')
 
 typedef unsigned char uint1;
 
@@ -32,5 +30,5 @@ int loadRotorConfig(struct Enigma* eni);
 int loadPlugBoardConfig(struct Enigma* eni);
 int loadReflectorConfig(struct Enigma* eni);
 
-#endif // ! _ROTORS_H
+#endif // ! _ROTOR_CONFIG_H
 

@@ -1,4 +1,5 @@
-#include "rotors.h"
+#include "rotor_config.h"
+#include "encryption.h"
 
 int main()
 {

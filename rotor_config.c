@@ -1,4 +1,4 @@
-#include "rotors.h"
+#include "rotor_config.h"
 
 void initEnigma(struct Enigma* eni)
 {
