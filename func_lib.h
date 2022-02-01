@@ -8,7 +8,7 @@
 #include "rotor_config.h"
 #include "encryption.h"
 
-void printTab(const int R, const int Tab[]);
+void printTab(const int R, const char Tab[]);
 
 #endif // ! _FUNC_LIB_H
 

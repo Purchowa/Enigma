@@ -7,7 +7,15 @@ int main()
 	char* encryptedTxt;
 
 	initEnigma(&enigma);
-	encryptedTxt = encrypt(&enigma, Txt);
-	free(encryptedTxt);
+	//encryptedTxt = code(&enigma, Txt);
+	//free(encryptedTxt);
+
+	char test = 'Y';
+	test++;
+	test -= 'A';
+	test %= CHAR_NUM;
+	test += 'A';
+
+	printf("%c\n", test);
 	return 0;
 }

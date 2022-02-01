@@ -140,11 +140,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="encryption.c" />
+    <ClCompile Include="func_lib.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="rotor_config.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="encryption.h" />
+    <ClInclude Include="func_lib.h" />
     <ClInclude Include="rotor_config.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
