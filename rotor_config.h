@@ -2,11 +2,10 @@
 #define _ROTOR_CONFIG_H
 
 #define _CRT_SECURE_NO_WARNINGS
-#include <stdio.h>
-#include <stdlib.h>
+#include "func_lib.h"
 
 #define CHAR_NUM 26
-#define ROTORCOUNT 3
+#define ROTORCOUNT 3 // Taka sama dlugosc klucza
 #define PAIR 2
 
 typedef unsigned char uint1;
