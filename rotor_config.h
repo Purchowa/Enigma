@@ -5,19 +5,19 @@
 #include "func_lib.h"
 
 #define CHAR_NUM 26
-#define ROTORCOUNT 3 // Taka sama dlugosc klucza
+#define ROTOR_COUNT 3 // Taka sama dlugosc klucza
 #define PAIR 2
 
 typedef unsigned char uint1;
 
 struct Enigma
 {
-	uint1 RotorOrder[ROTORCOUNT];
+	uint1 RotorOrder[ROTOR_COUNT];
 	uint1 reflectorNum;
 
-	char RotorPerm[ROTORCOUNT][CHAR_NUM];
-	char RotorTrans[ROTORCOUNT];
-	char Key[ROTORCOUNT];
+	char RotorPerm[ROTOR_COUNT][CHAR_NUM];
+	char RotorTrans[ROTOR_COUNT];
+	char Key[ROTOR_COUNT];
 	char PlugBoard[(CHAR_NUM) / (PAIR)][PAIR];
 	char RefPerm[CHAR_NUM];
 	

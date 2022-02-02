@@ -32,7 +32,6 @@ void incKey(struct Enigma* eni)
 	do
 	{
 		++eni->Key[i];
-		LOOP_ALPH(eni->Key[i]);
-	} while (eni->Key[i] == eni->RotorTrans[i] && i++ < (ROTORCOUNT - 1));
+		LoopAlph(eni->Key[i]);
+	} while (eni->Key[i] == eni->RotorTrans[i] && i++ < (ROTOR_COUNT - 1));
 }
-

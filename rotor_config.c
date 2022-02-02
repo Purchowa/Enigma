@@ -34,7 +34,7 @@ int loadRotorConfig(struct Enigma* eni)
 	char PathRotor[] = "rotor_mech/rotor0.txt";
 	size_t rtnF;
 
-	for (int i = 0; i < ROTORCOUNT; i++)
+	for (int i = 0; i < ROTOR_COUNT; i++)
 	{
 		PathRotor[sizeof(PathRotor) - 6] = eni->RotorOrder[i];
 
