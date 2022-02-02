@@ -7,15 +7,9 @@ int main()
 	char* encryptedTxt;
 
 	initEnigma(&enigma);
-	//encryptedTxt = code(&enigma, Txt);
-	//free(encryptedTxt);
+	encryptedTxt = code(&enigma, Txt);
+	free(encryptedTxt);
 
-	char test = 'Y';
-	test++;
-	test -= 'A';
-	test %= CHAR_NUM;
-	test += 'A';
-
-	printf("%c\n", test);
+	printf("%c\n", LOOP_ALPH('Z' + 10));
 	return 0;
 }

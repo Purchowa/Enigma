@@ -31,13 +31,8 @@ void incKey(struct Enigma* eni)
 	int i = 0;
 	do
 	{
-		eni->Key[i]++;
-		eni->Key[i] -= 'A';
-		eni->Key[i] %= CHAR_NUM;
-		eni->Key[i] += 'A';
-	} while (eni->Key[i] == eni->RotorTrans[i] && i++ < (ROTORCOUNT - 1)); // TODO: Sprawdzic i jak inkrementuje
-	
-	printTab(ROTORCOUNT, eni->Key);
-
+		++eni->Key[i];
+		LOOP_ALPH(eni->Key[i]);
+	} while (eni->Key[i] == eni->RotorTrans[i] && i++ < (ROTORCOUNT - 1));
 }
 
