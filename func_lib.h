@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef unsigned char uint1;
+typedef signed char sint1;
+
 #include "rotor_config.h"
 #include "encryption.h"
 

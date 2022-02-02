@@ -8,8 +8,6 @@
 #define ROTOR_COUNT 3 // Taka sama dlugosc klucza
 #define PAIR 2
 
-typedef unsigned char uint1;
-
 struct Enigma
 {
 	uint1 RotorOrder[ROTOR_COUNT];

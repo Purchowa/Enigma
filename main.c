@@ -8,6 +8,7 @@ int main()
 
 	initEnigma(&enigma);
 	encryptedTxt = code(&enigma, Txt);
+	//printf("%s\n", encryptedTxt);
 	free(encryptedTxt);
 
 	return 0;
