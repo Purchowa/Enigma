@@ -9,7 +9,7 @@
 
 char* code(struct Enigma* eni, const char Txt[]);
 void incKey(struct Enigma* eni);
-void shiftRotors(struct Enigma* eni);
+char plugboardSwap(struct Enigma* eni, const char* c);
 char encryptChar(struct Enigma* eni, const char* c);
 
 

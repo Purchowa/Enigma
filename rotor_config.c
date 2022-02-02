@@ -22,7 +22,7 @@ void initEnigma(struct Enigma* eni)
 
 int loadData(struct Enigma* eni)
 {
-	// Feature - zabezpieczenie przed dublowaniem sie na PlugBoard wtyczek
+	// Feature - zabezpieczenie przed dublowaniem sie na Plugboard wtyczek
 	// Feature - zabezpiecznie przed wczytaniem z pliku czegos innego niz ['A', 'Z']
 	return loadRotorConfig(eni) | loadPlugBoardConfig(eni) | loadReflectorConfig(eni);
 }
@@ -81,7 +81,7 @@ int loadPlugBoardConfig(struct Enigma* eni)
 	int i = 0;
 	do
 	{
-		rtnF = fread(eni->PlugBoard[i++], sizeof(eni->PlugBoard[0][0]), PAIR, fp);
+		rtnF = fread(eni->Plugboard[i++], sizeof(eni->Plugboard[0][0]), PAIR, fp);
 		fread(&nChar, sizeof(char), 1, fp); // reading '\n' character
 
 	} while(rtnF == PAIR);

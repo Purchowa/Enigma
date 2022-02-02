@@ -18,7 +18,7 @@ struct Enigma
 	char RotorPerm[ROTOR_COUNT][CHAR_NUM];
 	char RotorTrans[ROTOR_COUNT];
 	char Key[ROTOR_COUNT];
-	char PlugBoard[(CHAR_NUM) / (PAIR)][PAIR];
+	char Plugboard[(CHAR_NUM) / (PAIR)][PAIR];
 	char RefPerm[CHAR_NUM];
 	
 };
