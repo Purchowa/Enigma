@@ -5,12 +5,12 @@
 
 #define I(c) ((c)-'A')
 #define LoopAlph(c) ((((c) - 'A') % (CHAR_NUM)) + 'A')
-#define RotorPermSH(i, j, key) (eni->RotorPerm[(i)][((j) + I(key)) % (CHAR_NUM)])
+#define RotorPermSH(rotor, i, key) (eni->RotorPerm[(rotor)][((i) + I(key)) % (CHAR_NUM)])
 
 char* code(struct Enigma* eni, const char Txt[]);
 void incKey(struct Enigma* eni);
-char plugboardSwap(struct Enigma* eni, const char* c);
 char encryptChar(struct Enigma* eni, const char* c);
+char plugboardSwap(struct Enigma* eni, const char* c);
 
 
 

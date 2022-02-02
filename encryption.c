@@ -15,8 +15,7 @@ char* code(struct Enigma* eni, const char Txt[])
 	for (int i = 0; Txt[i] != '\0'; i++)
 	{
 		incKey(eni);
-		
-		// encryptedTxt[i] = encryptChar(eni, &Txt[i]);
+		encryptedTxt[i] = encryptChar(eni, &Txt[i]);
 	}
 
 
@@ -37,12 +36,25 @@ void incKey(struct Enigma* eni)
 	} while (eni->Key[i] == eni->RotorTrans[i] && i++ < (ROTOR_COUNT - 1));
 }
 
+char encryptChar(struct Enigma* eni, const char* c)
+{
+	char tmpC;
+	tmpC = plugboardSwap(eni, c);
+	for (int i = 0; i < ROTOR_COUNT; i++)
+	{
+		printf("WE: %c\n", tmpC);
+		tmpC = RotorPermSH(i, I(tmpC), eni->Key[i]);
+		printf("WY: %c\n\n", tmpC);
+
+	}
+}
+
 char plugboardSwap(struct Enigma* eni, const char* c)
 {
 	/*
-		Return switched char if not found -> returns original char 
+		Return switched char. If not found -> returns original char 
 	*/
-	for (int i = 0; i < CHAR_NUM / PAIR; i++)
+	for (int i = 0; i < (CHAR_NUM / PAIR); i++)
 	{
 		if (eni->Plugboard[i][0] == *c)
 			return eni->Plugboard[i][1];
