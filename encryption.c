@@ -52,15 +52,27 @@ char encryptChar(struct Enigma* eni, const char* c)
 	tmpC = plugboardSwap(eni, &tmpC);
 
 	// Enter rotors
+	sint1 key;
 	for (int i = 0; i < ROTOR_COUNT; i++)
-		tmpC = permShift(eni->RotorPerm[i], I(tmpC), Keys[i + 1] - Keys[i]);
+	{
+		key = I(eni->Key[i]);
+		tmpC = eni->RotorPerm[i][(tmpC - 65 + key) % 26];
+		tmpC = 65 + (tmpC - 39 - key) % 26;
+	}
+		//tmpC = permShift(eni->RotorPerm[i], I(tmpC), Keys[i + 1] - Keys[i]);
 
 	// Char gets reflected
-	tmpC = reflectChar(eni, c);
+	tmpC = reflectChar(eni, &tmpC, I(eni->Key[ROTOR_COUNT - 1])*(-1));
 
 	// Going back into rotors
-	for (int i = KEY_SIZE - 1; i >= 0; i--)
-		//tmpC = permShift(eni->RotorPerm[i], I(tmpC), eni->Key[i]);
+	int n = 0;
+	for (int i = ROTOR_COUNT - 1; i >= 0; i--)
+	{
+		tmpC = LoopAlph(tmpC + I(eni->Key[i]));
+		while (eni->RotorPerm[i][n++] != tmpC);
+		tmpC = 'A' + (CHAR_NUM + n - I(eni->Key[i])) % CHAR_NUM;
+	}
+	
 
 	tmpC = plugboardSwap(eni, &tmpC);
 
@@ -84,9 +96,11 @@ char plugboardSwap(struct Enigma* eni, const char* c)
 	return *c;
 }
 
-char reflectChar(struct Enigma* eni, const char* c)
+char reflectChar(struct Enigma* eni, const char* c, sint1 key)
 {
-	return eni->RefPerm[I(*c)];;
+	if (key < 0 )
+		key += CHAR_NUM;
+	return eni->RefPerm[(I(*c) + key) % CHAR_NUM];
 }
 
 char permShift(const char Perm[], const sint1 i, sint1 key)
