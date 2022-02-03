@@ -2,9 +2,9 @@
 
 void initEnigma(struct Enigma* eni)
 {
-	eni->Key[0] = 'G';
-	eni->Key[1] = 'L';
-	eni->Key[2] = 'F';
+	eni->Key[0] = 'A';
+	eni->Key[1] = 'A';
+	eni->Key[2] = 'A';
 
 	eni->RotorOrder[0] = '2';
 	eni->RotorOrder[1] = '1';
@@ -17,14 +17,13 @@ void initEnigma(struct Enigma* eni)
 		printf("error\n");
 		return;
 	}
+	prepareData(eni);
 	
 }
 
 int loadData(struct Enigma* eni)
 {
-	// Feature - zabezpieczenie przed dublowaniem sie na Plugboard wtyczek
-	// Feature - zabezpiecznie przed wczytaniem z pliku czegos innego niz ['A', 'Z']
-	return loadRotorConfig(eni) | loadPlugBoardConfig(eni) | loadReflectorConfig(eni);
+	return loadRotorConfig(eni) | loadPlugboardConfig(eni) | loadReflectorConfig(eni);
 }
 
 int loadRotorConfig(struct Enigma* eni)
@@ -64,7 +63,7 @@ int loadRotorConfig(struct Enigma* eni)
 	return 0;
 }
 
-int loadPlugBoardConfig(struct Enigma* eni)
+int loadPlugboardConfig(struct Enigma* eni)
 {
 	FILE* fp;
 	const char pathPlg[] = "plugboard/plugboard.txt";
@@ -122,4 +121,19 @@ int loadReflectorConfig(struct Enigma* eni)
 	fp = NULL;
 
 	return 0;
+}
+
+void prepareData(struct Enigma* eni)
+{
+	/*
+		Preparing data so that:
+			eni->Key -> [0; 25]
+			eni->RotorTrans -> [0; 25]
+	*/
+	for (int i = 0; i < ROTOR_COUNT; i++)
+	{
+		eni->Key[i] -= CHAR_BEGIN;
+		eni->RotorTrans[i] -= CHAR_BEGIN;
+	}
+	return;
 }

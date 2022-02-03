@@ -1,6 +1,8 @@
 #ifndef  _FUNC_LIB_H
 #define _FUNC_LIB_H
 
+#define _CRT_SECURE_NO_WARNINGS // fopen gives error without it
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

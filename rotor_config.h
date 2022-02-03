@@ -1,12 +1,14 @@
 #ifndef  _ROTOR_CONFIG_H
 #define _ROTOR_CONFIG_H
 
-#define _CRT_SECURE_NO_WARNINGS
 #include "func_lib.h"
 
-#define CHAR_NUM 26
+#define CHAR_BEGIN 'A'
+#define CHAR_END 'Z'
+#define CHAR_NUM ((CHAR_END) - (CHAR_BEGIN) + 1) // 26
 #define ROTOR_COUNT 3 // Taka sama dlugosc klucza
 #define PAIR 2
+
 
 struct Enigma
 {
@@ -26,6 +28,7 @@ int loadData(struct Enigma* eni);
 int loadRotorConfig(struct Enigma* eni);
 int loadPlugBoardConfig(struct Enigma* eni);
 int loadReflectorConfig(struct Enigma* eni);
+void prepareData(struct Enigma* eni);
 
 #endif // ! _ROTOR_CONFIG_H
 

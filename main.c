@@ -3,7 +3,7 @@
 int main()
 {
 	struct Enigma enigma = {0}; // Inicjalizacja wartosci struktury
-	const char Txt[] = "H";
+	const char Txt[] = "VNB";
 	char* encryptedTxt;
 
 	initEnigma(&enigma);

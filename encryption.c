@@ -39,44 +39,35 @@ void incKey(struct Enigma* eni)
 
 char encryptChar(struct Enigma* eni, const char* c)
 {
-	// Mozna na poczatku: *c - 'A' bo i tak operuje na czyms takim caly czas
-
-#define KEY_SIZE ((ROTOR_COUNT) + 2) // + 2 for empty keys
-	char Keys[KEY_SIZE] = { 0 };
 	char tmpC = *c;
-
-	for (int i = 1; i < KEY_SIZE - 1; i++)
-		Keys[i] = I(eni->Key[i-1]);
-
 	
 	tmpC = plugboardSwap(eni, &tmpC);
-
+	
+	tmpC -= CHAR_BEGIN; // tmpC -> [0; 25]
 	// Enter rotors
-	sint1 key;
 	for (int i = 0; i < ROTOR_COUNT; i++)
 	{
-		key = I(eni->Key[i]);
-		tmpC = eni->RotorPerm[i][(tmpC - 65 + key) % 26];
-		tmpC = 65 + (tmpC - 39 - key) % 26;
+		tmpC = eni->RotorPerm[i][LoopAlph(tmpC + eni->Key[i])];
+		tmpC = LoopAlph(I(tmpC) + KeyPositive(eni->Key[i] * (-1)));
+		// Wracanie do pozycji poczatkowej alfabetu, zeby odczytac znak bezposrednio 
+		// przy uzyciu klucza i kolejnego bebna
 	}
-		//tmpC = permShift(eni->RotorPerm[i], I(tmpC), Keys[i + 1] - Keys[i]);
 
 	// Char gets reflected
-	tmpC = reflectChar(eni, &tmpC, I(eni->Key[ROTOR_COUNT - 1])*(-1));
+	tmpC = I(eni->RefPerm[tmpC]);
 
 	// Going back into rotors
 	int n = 0;
-	for (int i = ROTOR_COUNT - 1; i >= 0; i--)
+	for (int i = ROTOR_COUNT - 1; i >= 0; i--, n = 0)
 	{
-		tmpC = LoopAlph(tmpC + I(eni->Key[i]));
-		while (eni->RotorPerm[i][n++] != tmpC);
-		tmpC = 'A' + (CHAR_NUM + n - I(eni->Key[i])) % CHAR_NUM;
+		tmpC = LoopAlph(tmpC + eni->Key[i]) + CHAR_BEGIN;
+		while (tmpC != eni->RotorPerm[i][n]) n++; // Szukanie pozycji w wirniku, na ktorej jest odczytywany znak
+		tmpC = LoopAlph(n + KeyPositive(eni->Key[i] * (-1)));
 	}
-	
+	tmpC += CHAR_BEGIN;
 
 	tmpC = plugboardSwap(eni, &tmpC);
 
-#undef KEY_SIZE
 	return tmpC;
 }
 
@@ -94,18 +85,4 @@ char plugboardSwap(struct Enigma* eni, const char* c)
 			return eni->Plugboard[i][0];
 	}
 	return *c;
-}
-
-char reflectChar(struct Enigma* eni, const char* c, sint1 key)
-{
-	if (key < 0 )
-		key += CHAR_NUM;
-	return eni->RefPerm[(I(*c) + key) % CHAR_NUM];
-}
-
-char permShift(const char Perm[], const sint1 i, sint1 key)
-{
-	if (key < 0)
-		key += CHAR_NUM;
-	return Perm[(i + key) % CHAR_NUM];
 }
