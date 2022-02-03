@@ -12,6 +12,7 @@ typedef signed char sint1;
 
 #include "rotor_config.h"
 #include "encryption.h"
+#include "loading_data.h"
 
 void printTab(const int R, const char Tab[]);
 

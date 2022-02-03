@@ -23,11 +23,7 @@ struct Enigma
 	
 };
 
-void initEnigma(struct Enigma* eni);
-int loadData(struct Enigma* eni);
-int loadRotorConfig(struct Enigma* eni);
-int loadPlugBoardConfig(struct Enigma* eni);
-int loadReflectorConfig(struct Enigma* eni);
+int initEnigma(struct Enigma* eni);
 void prepareData(struct Enigma* eni);
 
 #endif // ! _ROTOR_CONFIG_H
