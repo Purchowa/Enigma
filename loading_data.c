@@ -143,8 +143,14 @@ int loadUserInput(struct Enigma* eni)
 
 char* loadTxt(struct Enigma* eni, const char choice)
 {
+	/*
+		Returns:
+			NULL  - If app logic failed
+			char* - if okay
+	*/
 	FILE* fp;
-	char Buffer[BUF_SIZE] = { 0 }, *Txt;
+	char Buffer[BUF_SIZE] = { 0 };
+	char* Txt = NULL;
 	const char path[] = "io/in.txt";
 
 	switch (choice)
@@ -152,7 +158,9 @@ char* loadTxt(struct Enigma* eni, const char choice)
 		case '1':
 		{
 			printf("Wprowadz tekst do zakodowania z klawiatury: ");
-			scanf("%s", Buffer);
+			fgets(Buffer, BUF_SIZE, stdin); // fgets czyta do \n wraz z nim
+			Buffer[strcspn(Buffer, "\n")] = '\0';
+			// strcspn - zwraca pierwsze wystapienie '\n' w Buffer
 			break;
 		}
 		case '2':
@@ -162,11 +170,11 @@ char* loadTxt(struct Enigma* eni, const char choice)
 			if (fp == NULL)
 			{
 				perror(path);
-				return 1;
+				return 0;
 			}
 
 			if (fgets(Buffer, BUF_SIZE, fp) == NULL)
-				return 1;
+				return 0;
 			fclose(fp);
 			fp = NULL;
 			break;
@@ -174,7 +182,7 @@ char* loadTxt(struct Enigma* eni, const char choice)
 		default:
 		{
 			printf("Zla opcja\n");
-			return 1;
+			return 0;
 		}
 	}
 
@@ -182,7 +190,7 @@ char* loadTxt(struct Enigma* eni, const char choice)
 	unsigned int txtSiz = strlen(Buffer) + 1;
 	Txt = calloc(txtSiz, sizeof(Buffer[0]));
 	if (Txt == NULL)
-		return 1;
+		return 0;
 
 	memcpy(Txt, Buffer, txtSiz);
 	Txt = _strupr(Txt);
@@ -192,5 +200,29 @@ char* loadTxt(struct Enigma* eni, const char choice)
 
 void saveTxt(const char EncTxt[])
 {
+	FILE* fp;
 
+	fp = fopen("io/out.txt", "w");
+	if (fp == NULL)
+		return;
+
+	fwrite(EncTxt, sizeof(EncTxt[0]), strlen(EncTxt), fp);
+
+	fclose(fp);
+	fp = NULL;
+
+}
+
+int checkTxt(const char Txt[])
+{
+	// Returns 1 - if txt wrong.
+	for (int i = 0; Txt[i] != '\0'; i++)
+	{
+		if (!((Txt[i] >= CHAR_BEGIN) && (Txt[i] <= CHAR_END)))
+		{
+			printf("Cos nie tak z tekstem\n");
+			return 1;
+		}
+	}
+	return 0;
 }
