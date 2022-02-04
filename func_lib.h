@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 
 typedef unsigned char uint1;
 typedef signed char sint1;
@@ -15,6 +16,7 @@ typedef signed char sint1;
 #include "loading_data.h"
 
 void printTab(const int R, const char Tab[]);
+void colorTxt(const char Txt[], uint1 colorHex);
 
 #endif // ! _FUNC_LIB_H
 

@@ -47,7 +47,7 @@ int loadPlugboardConfig(struct Enigma* eni)
 {
 	FILE* fp;
 	const char pathPlg[] = "plugboard/plugboard.txt";
-	size_t rtnF;
+	size_t rtnF, alphFlag = 0, num;
 	char nChar; // var for reading NULL
 	fp = fopen(pathPlg, "r");
 
@@ -60,10 +60,22 @@ int loadPlugboardConfig(struct Enigma* eni)
 	int i = 0;
 	do
 	{
-		rtnF = fread(eni->Plugboard[i++], sizeof(eni->Plugboard[0][0]), PAIR, fp);
+		rtnF = fread(eni->Plugboard[i], sizeof(eni->Plugboard[0][0]), PAIR, fp);
+		/*for (int n = 0; n < PAIR; n++)
+		{
+			num = (size_t)1 << I(eni->Plugboard[i][n]);
+			if ((num & alphFlag) == num)
+			{
+				printf("Error: duplikat %s\n", pathPlg);
+				return 1;
+			}
+			else
+				alphFlag |= num;
+		}*/
 		fread(&nChar, sizeof(char), 1, fp); // reading '\n' character
+		i++;
 
-	} while (rtnF == PAIR);
+	} while (rtnF == PAIR && i < (CHAR_NUM / PAIR));
 
 	if (!feof(fp)) // Jesli po odczytaniu nie zostal osiagniety koniec pliku to cos jest nie tak
 	{
@@ -165,7 +177,8 @@ char* loadTxt(struct Enigma* eni, const char choice)
 		}
 		case '2':
 		{
-			printf("Wczytywanie tekstu z pliku: in.txt\n");
+			printf("Wczytywanie tekstu z pliku ");
+			colorTxt("in.txt", 0x06);
 			fp = fopen(path, "r");
 			if (fp == NULL)
 			{
@@ -181,6 +194,7 @@ char* loadTxt(struct Enigma* eni, const char choice)
 		}
 		default:
 		{
+			system("cls");
 			printf("Zla opcja\n");
 			return 0;
 		}
@@ -220,6 +234,7 @@ int checkTxt(const char Txt[])
 	{
 		if (!((Txt[i] >= CHAR_BEGIN) && (Txt[i] <= CHAR_END)))
 		{
+			system("cls");
 			printf("Cos nie tak z tekstem\n");
 			return 1;
 		}

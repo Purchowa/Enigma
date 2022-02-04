@@ -5,32 +5,46 @@ int main()
 	struct Enigma enigma = {0}; // Inicjalizacja wartosci struktury
 	char* Txt = NULL;
 	char* EncryptedTxt = NULL;
-	char choice, input;
-
+	char choice, strClr, exit;
 	printf("Symulator Enigmy\n");
 
 	do
 	{
-		printf("Wybierz skad chcesz wczytac tekst do zaszyfrowania: 1. Klawiatura, 2. Plik: \n");
-		choice = fgetc(stdin);
-		while ((input = fgetc(stdin)) != '\n'); // Czyszczenie stdin
-		Txt = loadTxt(&enigma, choice);
-	} while (!Txt || checkTxt(Txt));
+		do
+		{
+			printf("Wybierz skad chcesz wczytac tekst do zaszyfrowania: 1. Klawiatura, 2. Plik: \n");
+			choice = fgetc(stdin);
+			while ((strClr = fgetc(stdin)) != '\n'); // Czyszczenie stdin
+			Txt = loadTxt(&enigma, choice);
+		} while (!Txt || checkTxt(Txt));
 
-	if (initEnigma(&enigma))
-	{
-		printf("Failed loading data to Enigma\n");
-		return 1;
-	}
-	printf("Twoj tekst: %s\n", Txt);
+		printf("Twoj tekst: ");
+		colorTxt(Txt, 0x0C);
 
-	EncryptedTxt = code(&enigma, Txt);
-	printf("Tekst zaszyfrowany: %s\n", EncryptedTxt);
+		if (initEnigma(&enigma))
+		{
+			printf("Failed loading data to Enigma\n");
+			return 1;
+		}
 
-	printf("Zaszyfrowany tekst zapisany do pliku out.txt\n");
-	saveTxt(EncryptedTxt);
+		EncryptedTxt = code(&enigma, Txt);
+		printf("Tekst zaszyfrowany: ");
+		colorTxt(EncryptedTxt, 0x0A);
 
-	free(EncryptedTxt);
-	free(Txt);
+		printf("Zaszyfrowany tekst zapisany do pliku ");
+		colorTxt("out.txt", 0x06);
+		saveTxt(EncryptedTxt);
+
+		free(EncryptedTxt);
+		free(Txt);
+		printf("Koniec programu wprowadz ");
+		colorTxt("e", 0x0E);
+
+		exit = fgetc(stdin);
+		if (exit != '\n')
+			while ((strClr = fgetc(stdin)) != '\n');
+		system("cls");
+	} while (exit != 'e');
+
 	return 0;
 }
