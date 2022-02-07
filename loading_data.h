@@ -13,5 +13,6 @@ int loadUserInput(struct Enigma* eni);
 char* loadTxt(struct Enigma* eni, const char choice);
 void saveTxt(const char EncTxt[]);
 int checkTxt(const char Txt[]);
+int checkDuplicate(const char Input[], const int SIZE);
 
 #endif

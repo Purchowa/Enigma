@@ -44,6 +44,7 @@ int main()
 		if (exit != '\n')
 			while ((strClr = fgetc(stdin)) != '\n');
 		system("cls");
+		enigma = (struct Enigma){0}; // Zerowanie ze wzgledu na mozliwe zmiany w konfiguracji. Szczegolnie plugboard
 	} while (exit != 'e');
 
 	return 0;

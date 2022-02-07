@@ -47,7 +47,7 @@ int loadPlugboardConfig(struct Enigma* eni)
 {
 	FILE* fp;
 	const char pathPlg[] = "plugboard/plugboard.txt";
-	size_t rtnF, alphFlag = 0, num;
+	size_t rtnF;
 	char nChar; // var for reading NULL
 	fp = fopen(pathPlg, "r");
 
@@ -57,34 +57,30 @@ int loadPlugboardConfig(struct Enigma* eni)
 		return 1;
 	}
 
-	int i = 0;
+	int n = 0;
+	// first read then check
 	do
 	{
-		rtnF = fread(eni->Plugboard[i], sizeof(eni->Plugboard[0][0]), PAIR, fp);
-		/*for (int n = 0; n < PAIR; n++)
-		{
-			num = (size_t)1 << I(eni->Plugboard[i][n]);
-			if ((num & alphFlag) == num)
-			{
-				printf("Error: duplikat %s\n", pathPlg);
-				return 1;
-			}
-			else
-				alphFlag |= num;
-		}*/
+		rtnF = fread(eni->Plugboard[n], sizeof(eni->Plugboard[0][0]), PAIR, fp);
 		fread(&nChar, sizeof(char), 1, fp); // reading '\n' character
-		i++;
+		n++;
 
-	} while (rtnF == PAIR && i < (CHAR_NUM / PAIR));
+	} while (rtnF == PAIR && n < (CHAR_NUM / PAIR));
 
-	if (!feof(fp)) // Jesli po odczytaniu nie zostal osiagniety koniec pliku to cos jest nie tak
+	if (!feof(fp) && n < (CHAR_NUM / PAIR)) // Jesli po odczytaniu nie zostal osiagniety koniec pliku to cos jest nie tak
 	{
-		printf("Error reading : %s\n", pathPlg);
+		printf("Error reading: %s\n", pathPlg);
+		return 1;
+	}
+	fclose(fp);
+	fp = NULL;
+
+	if (checkDuplicate(eni->Plugboard[0], n * PAIR))
+	{
+		printf("Duplikat: %s\n", pathPlg);
 		return 1;
 	}
 
-	fclose(fp);
-	fp = NULL;
 	return 0;
 }
 
@@ -238,6 +234,21 @@ int checkTxt(const char Txt[])
 			printf("Cos nie tak z tekstem\n");
 			return 1;
 		}
+	}
+	return 0;
+}
+
+int checkDuplicate(const char Input[], const int SIZE)
+{
+	size_t alphFlag = 0, num;
+
+	for (int i = 0; i < SIZE; i++)
+	{
+		num = (size_t)1 << I(Input[i]);
+		if ((num & alphFlag) == num)
+			return 1;
+		else
+			alphFlag |= num;
 	}
 	return 0;
 }
