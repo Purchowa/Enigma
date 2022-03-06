@@ -12,7 +12,7 @@ int loadReflectorConfig(struct Enigma* eni);
 int loadUserInput(struct Enigma* eni);
 char* loadTxt(struct Enigma* eni, const char choice);
 void saveTxt(const char EncTxt[]);
-int checkTxt(const char Txt[]);
+int checkTxt(const char Txt[], const int R);
 int checkDuplicate(const char Input[], const int SIZE);
 
 #endif

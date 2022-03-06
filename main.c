@@ -16,7 +16,7 @@ int main()
 			choice = fgetc(stdin);
 			while ((strClr = fgetc(stdin)) != '\n'); // Czyszczenie stdin
 			Txt = loadTxt(&enigma, choice);
-		} while (!Txt || checkTxt(Txt));
+		} while (!Txt || checkTxt(Txt, strlen(Txt)));
 
 		printf("Twoj tekst: ");
 		colorTxt(Txt, 0x0C);

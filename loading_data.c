@@ -45,10 +45,15 @@ int loadRotorConfig(struct Enigma* eni)
 
 int loadPlugboardConfig(struct Enigma* eni)
 {
+	/*
+		Plugboard file can be empty, it means that no switching will be done.
+		Duplicates aren't tolerated.
+	*/
+
 	FILE* fp;
 	const char pathPlg[] = "plugboard/plugboard.txt";
 	size_t rtnF;
-	char nChar; // var for reading NULL
+	char nChar; // var for reading '\n'
 	fp = fopen(pathPlg, "r");
 
 	if (fp == NULL)
@@ -63,13 +68,13 @@ int loadPlugboardConfig(struct Enigma* eni)
 	{
 		rtnF = fread(eni->Plugboard[n], sizeof(eni->Plugboard[0][0]), PAIR, fp);
 		fread(&nChar, sizeof(char), 1, fp); // reading '\n' character
-		n++;
 
-	} while (rtnF == PAIR && n < (CHAR_NUM / PAIR));
-
-	if (!feof(fp) && n < (CHAR_NUM / PAIR)) // Jesli po odczytaniu nie zostal osiagniety koniec pliku to cos jest nie tak
+	} while (rtnF == PAIR && n < (CHAR_NUM / PAIR) && !checkTxt(eni->Plugboard[n++], PAIR));
+	
+	
+	if (!feof(fp) && n < (CHAR_NUM / PAIR))
 	{
-		printf("Error reading: %s\n", pathPlg);
+		printf("Didn't get to EOF: %s\n", pathPlg);
 		return 1;
 	}
 	fclose(fp);
@@ -77,7 +82,7 @@ int loadPlugboardConfig(struct Enigma* eni)
 
 	if (checkDuplicate(eni->Plugboard[0], n * PAIR))
 	{
-		printf("Duplikat: %s\n", pathPlg);
+		printf("Duplicate: %s\n", pathPlg);
 		return 1;
 	}
 
@@ -223,15 +228,14 @@ void saveTxt(const char EncTxt[])
 
 }
 
-int checkTxt(const char Txt[])
+int checkTxt(const char Txt[], const int R)
 {
 	// Returns 1 - if txt wrong.
-	for (int i = 0; Txt[i] != '\0'; i++)
+	for (int i = 0; i < R; i++)
 	{
 		if (!((Txt[i] >= CHAR_BEGIN) && (Txt[i] <= CHAR_END)))
 		{
-			system("cls");
-			printf("Cos nie tak z tekstem\n");
+			printf("Char isn't in ['A'; 'Z']\n");
 			return 1;
 		}
 	}
@@ -240,6 +244,8 @@ int checkTxt(const char Txt[])
 
 int checkDuplicate(const char Input[], const int SIZE)
 {
+	// Taking everythin as 1 dim. array
+
 	size_t alphFlag = 0, num;
 
 	for (int i = 0; i < SIZE; i++)
