@@ -3,7 +3,9 @@
 
 int loadData(struct Enigma* eni)
 {
-	return loadUserConfig(eni) | loadRotorPerm(eni) | loadPlugboardPerm(eni) | loadReflectorPerm(eni);
+	return loadUserConfig(eni) || loadRotorPerm(eni) || loadPlugboardPerm(eni) || loadReflectorPerm(eni);
+	// Operatory bitowe nie powoduja zaprzestania sprawdzania reszty warunkow
+	// Operatory logiczne - alternatywa - jesli jedna true to reszta sie nie wykona, bo i tak zwrocilo by true
 }
 
 int loadRotorPerm(struct Enigma* eni)
@@ -11,7 +13,7 @@ int loadRotorPerm(struct Enigma* eni)
 	// Returns true if failed.
 	FILE* fp;
 	char PathRotor[] = "rotor_mech/rotor0.txt";
-	size_t rtnF;
+	size_t rtnVal;
 
 	for (int i = 0; i < ROTOR_COUNT; i++)
 	{
@@ -24,17 +26,17 @@ int loadRotorPerm(struct Enigma* eni)
 			return 1;
 		}
 
-		rtnF = fread(eni->RotorPerm[i], sizeof(eni->RotorPerm[0][0]), CHAR_NUM, fp);
-		if (rtnF != CHAR_NUM)
+		rtnVal = fread(eni->RotorPerm[i], sizeof(eni->RotorPerm[0][0]), CHAR_NUM, fp);
+		if (rtnVal != CHAR_NUM)
 		{
-			printf("Error %s: expected %d but got %llu bytes after reading.\n", PathRotor, CHAR_NUM, rtnF);
+			printf("Error %s: expected %d but got %llu bytes after reading.\n", PathRotor, CHAR_NUM, rtnVal);
 			return 1;
 		}
 
-		rtnF = fread(&eni->RotorTrans[i], sizeof(eni->RotorTrans[0]), sizeof(eni->RotorTrans[0]), fp);
-		if (rtnF != sizeof(eni->RotorTrans[0]))
+		rtnVal = fread(&eni->RotorTrans[i], sizeof(eni->RotorTrans[0]), sizeof(eni->RotorTrans[0]), fp);
+		if (rtnVal != sizeof(eni->RotorTrans[0]))
 		{
-			printf("Error %s: expected %llu but got %llu bytes after reading.\n", PathRotor, sizeof(eni->RotorTrans[0]), rtnF);
+			printf("Error %s: expected %llu but got %llu bytes after reading.\n", PathRotor, sizeof(eni->RotorTrans[0]), rtnVal);
 			return 1;
 		}
 		fclose(fp);
@@ -52,7 +54,7 @@ int loadPlugboardPerm(struct Enigma* eni)
 
 	FILE* fp;
 	const char pathPlg[] = "plugboard/plugboard.txt";
-	size_t rtnF;
+	size_t rtnVal;
 	char nChar; // var for reading '\n'
 	fp = fopen(pathPlg, "r");
 
@@ -66,10 +68,10 @@ int loadPlugboardPerm(struct Enigma* eni)
 	// first read then check
 	do
 	{
-		rtnF = fread(eni->Plugboard[n], sizeof(eni->Plugboard[0][0]), PAIR, fp);
+		rtnVal = fread(eni->Plugboard[n], sizeof(eni->Plugboard[0][0]), PAIR, fp);
 		fread(&nChar, sizeof(char), 1, fp); // reading '\n' character
 
-	} while (rtnF == PAIR && n < (CHAR_NUM / PAIR) && !checkTxt(eni->Plugboard[n++], PAIR));
+	} while (rtnVal == PAIR && n < (CHAR_NUM / PAIR) && !checkTxt(eni->Plugboard[n++], PAIR));
 	
 	
 	if (!feof(fp) && n < (CHAR_NUM / PAIR))
@@ -92,7 +94,7 @@ int loadPlugboardPerm(struct Enigma* eni)
 int loadReflectorPerm(struct Enigma* eni)
 {
 	FILE* fp;
-	size_t rtnF;
+	size_t rtnVal;
 	char PathRef[] = "rotor_mech/reflector0.txt";
 
 	PathRef[sizeof(PathRef) - 6] = eni->reflectorNum;
@@ -104,15 +106,19 @@ int loadReflectorPerm(struct Enigma* eni)
 		return 1;
 	}
 
-	rtnF = fread(eni->RefPerm, sizeof(eni->RefPerm[0]), CHAR_NUM, fp);
-	if (rtnF != CHAR_NUM)
+	rtnVal = fread(eni->RefPerm, sizeof(eni->RefPerm[0]), CHAR_NUM, fp);
+	if (rtnVal != CHAR_NUM)
 	{
-		printf("Error %s: expected %d but got %llu bytes after reading.\n", PathRef, CHAR_NUM, rtnF);
+		printf("Error %s: expected %d but got %llu bytes after reading.\n", PathRef, CHAR_NUM, rtnVal);
 		return 1;
 	}
 	fclose(fp);
 	fp = NULL;
-
+	if (checkDuplicate(eni->RefPerm, CHAR_NUM))
+	{
+		printf("Duplicate in: %s\n", PathRef);
+		return 1;
+	}
 	return 0;
 }
 
@@ -133,14 +139,29 @@ int loadUserConfig(struct Enigma* eni)
 	// Reading key
 	rtnF = fread(eni->Key, sizeof(eni->Key[0]), ROTOR_COUNT, fp);
 	fread(&nChar, sizeof(char), 1, fp);
+	if (rtnF != ROTOR_COUNT || checkTxt(eni->Key, ROTOR_COUNT))
+	{
+		printf("Error at: %s\n", pathCfg);
+		return 1;
+	}
 
 	// Reading rotor order
 	rtnF = fread(eni->RotorOrder, sizeof(eni->RotorOrder[0]), ROTOR_COUNT, fp);
 	fread(&nChar, sizeof(char), 1, fp);
+	if (rtnF != ROTOR_COUNT || checkNumber(eni->RotorOrder, ROTOR_COUNT))
+	{
+		printf("Error at: %s\n", pathCfg);
+		return 1;
+	}
 
 	// Reading reflector number
 	rtnF = fread(&eni->reflectorNum, sizeof(eni->reflectorNum), 1, fp);
 	fread(&nChar, sizeof(char), 1, fp);
+	if (rtnF != 1 || checkNumber(eni->RotorOrder, 1))
+	{
+		printf("Error at: %s\n", pathCfg);
+		return 1;
+	}
 
 	if (!feof(fp)) // Jesli po odczytaniu nie zostal osiagniety koniec pliku to cos jest nie tak
 	{
@@ -154,7 +175,7 @@ int loadUserConfig(struct Enigma* eni)
 	return 0;
 }
 
-char* loadTxt(struct Enigma* eni, const char choice)
+char* loadTxt(struct Enigma* eni, const uint1 choice)
 {
 	/*
 		Returns:
@@ -233,7 +254,7 @@ int checkTxt(const char Txt[], const int R)
 	// Returns 1 - if txt wrong.
 	for (int i = 0; i < R; i++)
 	{
-		if (!((Txt[i] >= CHAR_BEGIN) && (Txt[i] <= CHAR_END)))
+		if ((Txt[i] < CHAR_BEGIN) || (Txt[i] > CHAR_END))
 		{
 			printf("Char isn't in ['A'; 'Z']\n");
 			return 1;
@@ -255,6 +276,19 @@ int checkDuplicate(const char Input[], const int SIZE)
 			return 1;
 		else
 			alphFlag |= num;
+	}
+	return 0;
+}
+
+int checkNumber(const char Input[], const int SIZE)
+{
+	for (int i = 0; i < SIZE; i++)
+	{
+		if ((Input[i] < '0') || (Input[i] > '9'))
+		{
+			printf("Number isn't in [0; 9]\n");
+			return 1;
+		}
 	}
 	return 0;
 }

@@ -5,9 +5,9 @@ int main()
 	struct Enigma enigma = {0}; // Inicjalizacja wartosci struktury
 	char* Txt = NULL;
 	char* EncryptedTxt = NULL;
-	char choice, strClr, exit;
-	printf("Symulator Enigmy\n");
+	char choice, strClr, exitChar;
 
+	printf("Symulator Enigmy\n");
 	do
 	{
 		do
@@ -40,12 +40,12 @@ int main()
 		printf("Koniec programu wprowadz ");
 		colorTxt("e", 0x0E);
 
-		exit = fgetc(stdin);
-		if (exit != '\n')
+		exitChar = fgetc(stdin);
+		if (exitChar != '\n')
 			while ((strClr = fgetc(stdin)) != '\n');
 		system("cls");
 		enigma = (struct Enigma){0}; // Zerowanie ze wzgledu na mozliwe zmiany w konfiguracji. Szczegolnie plugboard
-	} while (exit != 'e');
+	} while (exitChar != 'e');
 
 	return 0;
 }
