@@ -20,6 +20,7 @@ int main()
 
 		printf("Twoj tekst: ");
 		colorTxt(Txt, 0x0C);
+		putchar('\n');
 
 		if (initEnigma(&enigma))
 		{
@@ -30,15 +31,17 @@ int main()
 		EncryptedTxt = code(&enigma, Txt);
 		printf("Tekst zaszyfrowany: ");
 		colorTxt(EncryptedTxt, 0x0A);
+		putchar('\n');
 
 		printf("Zaszyfrowany tekst zapisany do pliku ");
-		colorTxt("out.txt", 0x06);
+		colorTxt("out.txt\n", 0x06);
 		saveTxt(EncryptedTxt);
 
 		free(EncryptedTxt);
 		free(Txt);
 		printf("Koniec programu wprowadz ");
 		colorTxt("e", 0x0E);
+		printf(" aby zakonczyc\n");
 
 		exitChar = fgetc(stdin);
 		if (exitChar != '\n')

@@ -200,7 +200,7 @@ char* loadTxt(struct Enigma* eni, const uint1 choice)
 		case '2':
 		{
 			printf("Wczytywanie tekstu z pliku ");
-			colorTxt("in.txt", 0x06);
+			colorTxt("in.txt\n", 0x06);
 			fp = fopen(path, "r");
 			if (fp == NULL)
 			{

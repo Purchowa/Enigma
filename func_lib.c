@@ -13,6 +13,6 @@ void colorTxt(const char Txt[], uint1 colorHex)
 	HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
 	// Uchwyt do okna konsoli standard output
 	SetConsoleTextAttribute(h, colorHex);
-	printf("%s\n", Txt);
+	printf("%s", Txt);
 	SetConsoleTextAttribute(h, 0x0F); // Reset color to white
 }
