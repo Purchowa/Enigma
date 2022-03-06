@@ -6,10 +6,10 @@
 #define BUF_SIZE 256
 
 int loadData(struct Enigma* eni);
-int loadRotorConfig(struct Enigma* eni);
-int loadPlugboardConfig(struct Enigma* eni);
-int loadReflectorConfig(struct Enigma* eni);
-int loadUserInput(struct Enigma* eni);
+int loadRotorPerm(struct Enigma* eni);
+int loadPlugboardPerm(struct Enigma* eni);
+int loadReflectorPerm(struct Enigma* eni);
+int loadUserConfig(struct Enigma* eni);
 char* loadTxt(struct Enigma* eni, const char choice);
 void saveTxt(const char EncTxt[]);
 int checkTxt(const char Txt[], const int R);

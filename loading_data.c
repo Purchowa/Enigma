@@ -3,10 +3,10 @@
 
 int loadData(struct Enigma* eni)
 {
-	return loadUserInput(eni) | loadRotorConfig(eni) | loadPlugboardConfig(eni) | loadReflectorConfig(eni);
+	return loadUserConfig(eni) | loadRotorPerm(eni) | loadPlugboardPerm(eni) | loadReflectorPerm(eni);
 }
 
-int loadRotorConfig(struct Enigma* eni)
+int loadRotorPerm(struct Enigma* eni)
 {
 	// Returns true if failed.
 	FILE* fp;
@@ -43,7 +43,7 @@ int loadRotorConfig(struct Enigma* eni)
 	return 0;
 }
 
-int loadPlugboardConfig(struct Enigma* eni)
+int loadPlugboardPerm(struct Enigma* eni)
 {
 	/*
 		Plugboard file can be empty, it means that no switching will be done.
@@ -89,7 +89,7 @@ int loadPlugboardConfig(struct Enigma* eni)
 	return 0;
 }
 
-int loadReflectorConfig(struct Enigma* eni)
+int loadReflectorPerm(struct Enigma* eni)
 {
 	FILE* fp;
 	size_t rtnF;
@@ -116,7 +116,7 @@ int loadReflectorConfig(struct Enigma* eni)
 	return 0;
 }
 
-int loadUserInput(struct Enigma* eni)
+int loadUserConfig(struct Enigma* eni)
 {
 	FILE* fp;
 	const char pathCfg[] = "config/config.txt";
