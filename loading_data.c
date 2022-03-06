@@ -273,7 +273,10 @@ int checkDuplicate(const char Input[], const int SIZE)
 	{
 		num = (size_t)1 << I(Input[i]);
 		if ((num & alphFlag) == num)
+		{
+			printf("Duplicated char: %c\n", Input[i]);
 			return 1;
+		}
 		else
 			alphFlag |= num;
 	}
