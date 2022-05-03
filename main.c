@@ -2,7 +2,7 @@
 
 int main()
 {
-	struct Enigma enigma = {0}; // Inicjalizacja wartosci struktury
+	struct Enigma enigma = {0}; // Initializing all values to zero
 	char* Txt = NULL;
 	char* EncryptedTxt = NULL;
 	char choice, strClr, exitChar;
@@ -14,7 +14,7 @@ int main()
 		{
 			printf("Wybierz skad chcesz wczytac tekst do zaszyfrowania: 1. Klawiatura, 2. Plik: \n");
 			choice = fgetc(stdin);
-			while ((strClr = fgetc(stdin)) != '\n'); // Czyszczenie stdin
+			while ((strClr = fgetc(stdin)) != '\n'); // Clearing stdin
 			Txt = loadTxt(&enigma, choice);
 		} while (!Txt || checkTxt(Txt, strlen(Txt)));
 
@@ -47,7 +47,7 @@ int main()
 		if (exitChar != '\n')
 			while ((strClr = fgetc(stdin)) != '\n');
 		system("cls");
-		enigma = (struct Enigma){0}; // Zerowanie ze wzgledu na mozliwe zmiany w konfiguracji. Szczegolnie plugboard
+		enigma = (struct Enigma){0}; // Reseting old data to zeros beacuse of posible changes in config files.
 	} while (exitChar != 'e' && exitChar != 'E');
 
 	return 0;

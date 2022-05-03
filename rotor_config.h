@@ -6,7 +6,7 @@
 #define CHAR_BEGIN 'A'
 #define CHAR_END 'Z'
 #define CHAR_NUM ((CHAR_END) - (CHAR_BEGIN) + 1) // 26
-#define ROTOR_COUNT 3 // Taka sama dlugosc klucza
+#define ROTOR_COUNT 3 // Key has same length
 #define PAIR 2
 
 
@@ -24,7 +24,6 @@ struct Enigma
 };
 
 int initEnigma(struct Enigma* eni);
-void prepareData(struct Enigma* eni);
 
 #endif // ! _ROTOR_CONFIG_H
 

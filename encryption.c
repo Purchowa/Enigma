@@ -1,29 +1,22 @@
 #include "encryption.h"
 
-char* code(struct Enigma* eni, const char Txt[])
+static char plugboardSwap(const struct Enigma* eni, const char c)
 {
-	// Returns pointer to  encrypted char[]
-	char* encryptedTxt = calloc(strlen(Txt)+1, sizeof(*Txt));
-	if (encryptedTxt == NULL)
+	/*
+		Return switched char. If not found -> returns original char
+	*/
+	for (int i = 0; i < (CHAR_NUM / PAIR); i++)
 	{
-		printf("Error: got null from calloc\n");
-		free(encryptedTxt);
-		return NULL;
-	}
+		if (eni->Plugboard[i][0] == c)
+			return eni->Plugboard[i][1];
 
-	// Main Loop for encrypting char by char
-	int i;
-	for (i = 0; Txt[i] != '\0'; i++)
-	{
-		incKey(eni);
-		encryptedTxt[i] = encryptChar(eni, &Txt[i]);
+		if (eni->Plugboard[i][1] == c)
+			return eni->Plugboard[i][0];
 	}
-	encryptedTxt[i] = '\0';
-
-	return encryptedTxt;
+	return c;
 }
 
-void incKey(struct Enigma* eni)
+static void incKey(struct Enigma* eni)
 {
 	/*
 		Jesli klucz bedzie taki sam jak punkt przeniesienie na poczatku to po nacisnieciu trzeba
@@ -37,11 +30,11 @@ void incKey(struct Enigma* eni)
 	} while (eni->Key[i] == eni->RotorTrans[i] && i++ < (ROTOR_COUNT - 1));
 }
 
-char encryptChar(struct Enigma* eni, const char* c)
+static char encryptChar(const struct Enigma* eni, const char c)
 {
-	char tmpC = *c;
+	char tmpC = c;
 	
-	tmpC = plugboardSwap(eni, &tmpC);
+	tmpC = plugboardSwap(eni, tmpC);
 	
 	tmpC -= CHAR_BEGIN; // tmpC -> [0; 25]
 	// Enter rotors
@@ -51,6 +44,7 @@ char encryptChar(struct Enigma* eni, const char* c)
 		tmpC = LoopAlph(I(tmpC) + KeyPositive(eni->Key[i] * (-1)));
 		// Wracanie do pozycji poczatkowej alfabetu, zeby odczytac znak bezposrednio 
 		// przy uzyciu klucza i kolejnego bebna
+		// Returning back to default position in alphabet so as to read directly from key on another rotor.
 	}
 
 	// Char gets reflected
@@ -66,23 +60,30 @@ char encryptChar(struct Enigma* eni, const char* c)
 	}
 	tmpC += CHAR_BEGIN;
 
-	tmpC = plugboardSwap(eni, &tmpC);
+	tmpC = plugboardSwap(eni, tmpC);
 
 	return tmpC;
 }
 
-char plugboardSwap(struct Enigma* eni, const char* c)
+char* code(struct Enigma* eni, const char Txt[])
 {
-	/*
-		Return switched char. If not found -> returns original char 
-	*/
-	for (int i = 0; i < (CHAR_NUM / PAIR); i++)
+	// Returns pointer to  encrypted char[]
+	char* encryptedTxt = calloc(strlen(Txt) + 1, sizeof(*Txt));
+	if (encryptedTxt == NULL)
 	{
-		if (eni->Plugboard[i][0] == *c)
-			return eni->Plugboard[i][1];
-
-		if (eni->Plugboard[i][1] == *c)
-			return eni->Plugboard[i][0];
+		printf("Error: got null from calloc\n");
+		free(encryptedTxt);
+		return NULL;
 	}
-	return *c;
+
+	// Main Loop for encrypting char by char
+	int i;
+	for (i = 0; Txt[i] != '\0'; i++)
+	{
+		incKey(eni);
+		encryptedTxt[i] = encryptChar(eni, Txt[i]);
+	}
+	encryptedTxt[i] = '\0';
+
+	return encryptedTxt;
 }

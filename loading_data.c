@@ -1,14 +1,39 @@
 #include "loading_data.h"
 
-
-int loadData(struct Enigma* eni)
+static int checkDuplicate(const char Input[], const int SIZE)
 {
-	return loadUserConfig(eni) || loadRotorPerm(eni) || loadPlugboardPerm(eni) || loadReflectorPerm(eni);
-	// Operatory bitowe nie powoduja zaprzestania sprawdzania reszty warunkow
-	// Operatory logiczne - alternatywa - jesli jedna true to reszta sie nie wykona, bo i tak zwrocilo by true
+	// Taking everythin as 1 dim. array
+
+	size_t alphFlag = 0, num;
+
+	for (int i = 0; i < SIZE; i++)
+	{
+		num = (size_t)1 << I(Input[i]);
+		if ((num & alphFlag) == num)
+		{
+			printf("Duplicated char: %c\n", Input[i]);
+			return 1;
+		}
+		else
+			alphFlag |= num;
+	}
+	return 0;
 }
 
-int loadRotorPerm(struct Enigma* eni)
+static int checkNumber(const char Input[], const int SIZE)
+{
+	for (int i = 0; i < SIZE; i++)
+	{
+		if ((Input[i] < '0') || (Input[i] > '9'))
+		{
+			printf("Number isn't in [0; 9]\n");
+			return 1;
+		}
+	}
+	return 0;
+}
+
+static int loadRotorPerm(struct Enigma* eni)
 {
 	// Returns true if failed.
 	FILE* fp;
@@ -45,7 +70,7 @@ int loadRotorPerm(struct Enigma* eni)
 	return 0;
 }
 
-int loadPlugboardPerm(struct Enigma* eni)
+static int loadPlugboardPerm(struct Enigma* eni)
 {
 	/*
 		Plugboard file can be empty, it means that no switching will be done.
@@ -91,7 +116,7 @@ int loadPlugboardPerm(struct Enigma* eni)
 	return 0;
 }
 
-int loadReflectorPerm(struct Enigma* eni)
+static int loadReflectorPerm(struct Enigma* eni)
 {
 	FILE* fp;
 	size_t rtnVal;
@@ -122,7 +147,7 @@ int loadReflectorPerm(struct Enigma* eni)
 	return 0;
 }
 
-int loadUserConfig(struct Enigma* eni)
+static int loadUserConfig(struct Enigma* eni)
 {
 	FILE* fp;
 	const char pathCfg[] = "config/config.txt";
@@ -175,6 +200,13 @@ int loadUserConfig(struct Enigma* eni)
 	return 0;
 }
 
+int loadData(struct Enigma* eni)
+{
+	return loadUserConfig(eni) || loadRotorPerm(eni) || loadPlugboardPerm(eni) || loadReflectorPerm(eni);
+	// Operatory bitowe nie powoduja zaprzestania sprawdzania reszty warunkow
+	// Operatory logiczne - alternatywa - jesli jedna true to reszta sie nie wykona, bo i tak zwrocilo by true
+}
+
 char* loadTxt(struct Enigma* eni, const uint1 choice)
 {
 	/*
@@ -223,7 +255,7 @@ char* loadTxt(struct Enigma* eni, const uint1 choice)
 	}
 
 
-	unsigned int txtSiz = strlen(Buffer) + 1;
+	size_t txtSiz = strlen(Buffer) + 1;
 	Txt = calloc(txtSiz, sizeof(Buffer[0]));
 	if (Txt == NULL)
 		return 0;
@@ -257,39 +289,6 @@ int checkTxt(const char Txt[], const int R)
 		if ((Txt[i] < CHAR_BEGIN) || (Txt[i] > CHAR_END))
 		{
 			printf("Char isn't in ['A'; 'Z']\n");
-			return 1;
-		}
-	}
-	return 0;
-}
-
-int checkDuplicate(const char Input[], const int SIZE)
-{
-	// Taking everythin as 1 dim. array
-
-	size_t alphFlag = 0, num;
-
-	for (int i = 0; i < SIZE; i++)
-	{
-		num = (size_t)1 << I(Input[i]);
-		if ((num & alphFlag) == num)
-		{
-			printf("Duplicated char: %c\n", Input[i]);
-			return 1;
-		}
-		else
-			alphFlag |= num;
-	}
-	return 0;
-}
-
-int checkNumber(const char Input[], const int SIZE)
-{
-	for (int i = 0; i < SIZE; i++)
-	{
-		if ((Input[i] < '0') || (Input[i] > '9'))
-		{
-			printf("Number isn't in [0; 9]\n");
 			return 1;
 		}
 	}

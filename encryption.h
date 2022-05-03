@@ -8,10 +8,6 @@
 #define KeyPositive(k) ((k) + CHAR_NUM)
 
 char* code(struct Enigma* eni, const char Txt[]);
-void incKey(struct Enigma* eni);
-char encryptChar(struct Enigma* eni, const char* c);
-char plugboardSwap(struct Enigma* eni, const char* c);
-
 
 #endif // ! _ENCRYPTION_H
 

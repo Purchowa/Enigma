@@ -1,18 +1,9 @@
 #include "rotor_config.h"
 
-int initEnigma(struct Enigma* eni)
-{
-	if (loadData(eni))
-		return 1;
-
-	prepareData(eni);
-	return 0;
-}
-
-void prepareData(struct Enigma* eni)
+static void prepareData(struct Enigma* eni)
 {
 	/*
-		Preparing data so that:
+		Preparing data so values must be at range:
 			eni->Key -> [0; 25]
 			eni->RotorTrans -> [0; 25]
 	*/
@@ -23,3 +14,13 @@ void prepareData(struct Enigma* eni)
 	}
 	return;
 }
+
+int initEnigma(struct Enigma* eni)
+{
+	if (loadData(eni))
+		return 1;
+
+	prepareData(eni);
+	return 0;
+}
+

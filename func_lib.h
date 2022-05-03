@@ -4,8 +4,6 @@
 #define _CRT_SECURE_NO_WARNINGS // fopen gives error without it
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <windows.h>
 
 typedef unsigned char uint1;
